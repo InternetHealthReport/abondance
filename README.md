@@ -12,6 +12,7 @@ cd abondance
 sudo pip install -r requirements.txt 
 sudo python setup.py install
 ```
+## AS inter-dependency (AS hegemony)
 ### Example: Retrieve dependencies for AS2501 on September 15th, 2018
 ```python
 from abondance.hegemony import Hegemony
