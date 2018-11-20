@@ -13,7 +13,7 @@ def worker_task(sess, resp):
 
 class Hegemony():
 
-    def __init__(self, originasns, start, end, asns=None, af=4, session=None, 
+    def __init__(self, start, end, originasns=None, asns=None, af=4, session=None, 
             cache=True, cache_dir="cache/", 
             url='https://ihr.iijlab.net/ihr/api/hegemony/',
             nb_threads=2):
@@ -38,10 +38,12 @@ class Hegemony():
 
         if isinstance(originasns, int):
             originasns = [originasns]
+        elif originasns is None:
+            originasns = [None]
 
         if isinstance(asns, int):
             asns = [asns]
-        else:
+        elif asns is None:
             asns = [None]
 
         self.originasns = set(originasns)
@@ -69,7 +71,6 @@ class Hegemony():
         """Single API query. Don't call this method, use get_results instead."""
 
         params = dict(
-            originasn=originasn,
             timebin__gte=arrow.get(self.start),
             timebin__lte=arrow.get(self.end),
             af=self.af,
@@ -79,6 +80,13 @@ class Hegemony():
 
         if asn is not None:
             params["asn"]=asn
+
+        if originasn is not None:
+            params["originasn"]=originasn
+
+        if originasn is None and asn is None:
+            logging.error("You should give at least a origin ASN or an ASN.")
+            return None
 
         logging.info("query results for {}, page={}".format((originasn,asn), page))
         return self.session.get(
