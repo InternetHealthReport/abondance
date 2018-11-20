@@ -16,8 +16,21 @@ sudo python setup.py install
 ```python
 from abondance.hegemony import Hegemony
 
-hege = Hegemony(originasns=[2501], start="2018-09-15", end="2018-10-16")
+hege = Hegemony(originasns=[2501], start="2018-09-15 00:00", end="2018-09-15 23:59")
 
 for r in hege.get_results():
+  print(r)
+```
+
+### Example: Retrieve dependents of AS2500 on September 15th, 2018
+```python
+from abondance.hegemony import Hegemony
+
+hege = Hegemony(asns=[2500], start="2018-09-15 00:00", end="2018-09-15 23:59")
+
+for r in hege.get_results():
+  # Skip results from the global graph
+  if r["originasn"] == 0:
+    continue
   print(r)
 ```
