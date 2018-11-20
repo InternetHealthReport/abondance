@@ -1,4 +1,4 @@
-# Abondance: Python library for Internet Health Report API
+# abondance: Python library for Internet Health Report API
 
 ### Installation
 Get the latest source files:
