@@ -63,7 +63,7 @@ class Hegemony():
         self.cache_dir = cache_dir
         if not os.path.exists(cache_dir):
             os.mkdir(cache_dir)
-
+        self.params = {}
         self.queries = defaultdict(list)
 
     
@@ -87,10 +87,10 @@ class Hegemony():
         if originasn is None and asn is None:
             logging.error("You should give at least a origin ASN or an ASN.")
             return None
-
+        self.params = params
         logging.info("query results for {}, page={}".format((originasn,asn), page))
         return self.session.get(
-                url=self.url, params=params, 
+                url=self.url, params=params,
                 background_callback=worker_task
                 )
 
@@ -141,14 +141,14 @@ class Hegemony():
                         yield resp.data["results"]
                         all_results.append(resp.data["results"])
                     else:
-                        logging.warning("No hegemony results for  {}".format(params))
+                        logging.warning("No hegemony results for  {}".format(self.params))
 
                     # if results are incomplete get the other pages
                     if resp.data.get("next") :
                         nb_pages = math.ceil(resp.data["count"]/len(resp.data["results"]))
                         pages_queries = []
                         logging.info("{} more pages to query".format(nb_pages))
-                        for p in range(2,nb_pages+1):
+                        for p in range(2,int(nb_pages)+1):
                             pages_queries.append(self.query_api(originasn, asn, p))
 
                         for i, page_resp in enumerate(pages_queries):
@@ -157,7 +157,7 @@ class Hegemony():
                                 yield resp.data["results"]
                                 all_results.append(resp.data["results"])
                             else:
-                                logging.warning("No hegemony results for {}, page={}".format(params,i+2))
+                                logging.warning("No hegemony results for {}, page={}".format(self.params,i+2))
 
                     if self.cache and len(all_results)>0 and len(all_results[0]) :
                         logging.info("caching results to disk")
@@ -166,10 +166,10 @@ class Hegemony():
 
 if __name__ == "__main__":
     FORMAT = '%(asctime)s %(processName)s %(message)s'
-    logging.basicConfig(format=FORMAT, filename="hegemony.log", level=logging.INFO, 
+    logging.basicConfig(format=FORMAT, filename="hegemony.log", level=logging.INFO,
             datefmt='%Y-%m-%d %H:%M:%S')
     res = Hegemony(
-            originasns=[2501], start="2018-09-15", end="2018-10-16"
+            originasns=[2907, 7922], start="2018-09-15", end="2018-10-16"
             ).get_results()
 
     for r in res:
