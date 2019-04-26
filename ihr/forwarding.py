@@ -154,7 +154,7 @@ if __name__ == "__main__":
     FORMAT = '%(asctime)s %(processName)s %(message)s'
     logging.basicConfig(format=FORMAT, filename="Forwarding_Alarms.log", level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
-    res = forwarding(
+    res = Forwarding(
         asns=[2907, 7922], start="2018-09-15", end="2018-10-16"
     ).get_results()
 
