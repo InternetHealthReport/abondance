@@ -15,7 +15,7 @@ def worker_task(sess, resp):
 class Delay():
     def __init__(self, start, end, asns=None, af=4, session=None,
                  cache=True, cache_dir="cache/",
-                 url='https://ihr.iijlab.net/ihr/api/delay_alarms/',
+                 url='https://ihr.iijlab.net/ihr/api/delay/',
                  nb_threads=2):
         """
         :originasn: Origin ASN of interest. It can be a list of ASNs or a single
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     logging.basicConfig(format=FORMAT, filename="delay.log", level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
     res = Delay(
-        asns=[2907, 7922], start="2018-09-15", end="2018-10-16"
+        asns=[2907, 7922], start="2018-09-16", end="2018-10-16"
     ).get_results()
 
     for r in res:

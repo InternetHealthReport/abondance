@@ -15,7 +15,7 @@ def worker_task(sess, resp):
 class Forwarding():
     def __init__(self, start, end, asns=None, af=4, session=None,
                  cache=True, cache_dir="cache/",
-                 url='https://ihr.iijlab.net/ihr/api/forwarding_alarms/',
+                 url='https://ihr.iijlab.net/ihr/api/forwarding/',
                  nb_threads=2):
         """
         :originasn: Origin ASN of interest. It can be a list of ASNs or a single
