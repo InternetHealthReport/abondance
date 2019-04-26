@@ -40,7 +40,7 @@ for r in hege.get_results():
 ```python
 from ihr.delay import Delay
 
-res = Delay(asns=[7922], start="2018-09-15 00:00", end="2018-10-16 23:59")
+res = Delay(asns=[7922], start="2018-09-15 00:00", end="2018-9-15 23:59")
 
 for r in res.get_results():
   print(r)
@@ -51,7 +51,7 @@ for r in res.get_results():
 ```python
 from ihr.delay import Delay
 
-res = fordwarding(asns=[7922], start="2018-09-15 00:00", end="2018-10-16 23:59")
+res = fordwarding(asns=[7922], start="2018-09-15 00:00", end="2018-9-15 23:59")
 
 for r in res.get_results():
   print(r)
