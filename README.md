@@ -35,3 +35,27 @@ for r in hege.get_results():
     continue
   print(r)
 ```
+## AS Delay
+### Example: Retrieve delay for AS7922 on September 15th, 2018
+```python
+from ihr.delay import Delay
+
+res = Delay(asns=[7922], start="2018-09-15 00:00", end="2018-10-16 23:59")
+
+for r in res.get_results():
+  print(r)
+```
+
+## AS Fordwarding alarms
+### Example: Retrieve fordwarding alarms for AS7922 on September 15th, 2018
+```python
+from ihr.delay import Delay
+
+res = fordwarding(asns=[7922], start="2018-09-15 00:00", end="2018-10-16 23:59")
+
+for r in res.get_results():
+  print(r)
+```
+
+
+
