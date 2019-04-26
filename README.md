@@ -46,12 +46,12 @@ for r in res.get_results():
   print(r)
 ```
 
-## AS Fordwarding alarms
-### Example: Retrieve fordwarding alarms for AS7922 on September 15th, 2018
+## AS Forwarding alarms
+### Example: Retrieve forwarding alarms for AS7922 on September 15th, 2018
 ```python
-from ihr.delay import Delay
+from ihr.forwarding import Forwarding
 
-res = fordwarding(asns=[7922], start="2018-09-15 00:00", end="2018-9-15 23:59")
+res = Forwarding(asns=[7922], start="2018-09-15 00:00", end="2018-9-15 23:59")
 
 for r in res.get_results():
   print(r)
