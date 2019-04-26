@@ -12,7 +12,7 @@ def worker_task(sess, resp):
     resp.data = resp.json()
 
 
-class forwarding():
+class Forwarding():
     def __init__(self, start, end, asns=None, af=4, session=None,
                  cache=True, cache_dir="cache/",
                  url='https://ihr.iijlab.net/ihr/api/forwarding_alarms/',
