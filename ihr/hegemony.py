@@ -3,12 +3,18 @@ import arrow
 import logging
 import pickle
 import math
+import json
 from collections import defaultdict
 from requests_futures.sessions import FuturesSession
 
-def worker_task(sess, resp):
+
+def worker_task(resp, *args, **kwargs):
     """Process json in background"""
-    resp.data = resp.json()
+    try:
+        resp.data = resp.json()
+    except json.decoder.JSONDecodeError:
+        logging.error("Error while reading Atlas json data.\n")
+        resp.data = {}
 
 
 class Hegemony():
@@ -91,7 +97,7 @@ class Hegemony():
         logging.info("query results for {}, page={}".format((originasn,asn), page))
         return self.session.get(
                 url=self.url, params=params,
-                background_callback=worker_task
+                hooks={'response': worker_task, }
                 )
 
 
