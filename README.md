@@ -1,6 +1,14 @@
 # abondance: Python library for Internet Health Report API
 
-### Installation
+## Installation
+
+### The easy way 
+``````
+pip install abondance
+``````
+
+
+### From source files
 Get the latest source files:
 ```
 git clone git@github.com:InternetHealthReport/abondance.git
