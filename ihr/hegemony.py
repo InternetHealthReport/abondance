@@ -147,7 +147,7 @@ class Hegemony():
                         yield resp.data["results"]
                         all_results.append(resp.data["results"])
                     else:
-                        logging.warning("No hegemony results for  {}".format(self.params))
+                        logging.warning("No hegemony results for  origin AS={}, AS={}".format(originasn, asn))
 
                     # if results are incomplete get the other pages
                     if resp.data.get("next") :
@@ -163,7 +163,7 @@ class Hegemony():
                                 yield resp.data["results"]
                                 all_results.append(resp.data["results"])
                             else:
-                                logging.warning("No hegemony results for {}, page={}".format(self.params,i+2))
+                                logging.warning("No hegemony results for origin AS={}, AS={}, page={}".format(originasn, asn, i+2))
 
                     if self.cache and len(all_results)>0 and len(all_results[0]) :
                         logging.info("caching results to disk")
