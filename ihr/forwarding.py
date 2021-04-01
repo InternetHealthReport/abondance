@@ -1,8 +1,8 @@
 import os
 import arrow
-import json
+from json.decoder import JSONDecodeError
 import logging
-import pickle
+import ujson as json
 import math
 from collections import defaultdict
 from requests_futures.sessions import FuturesSession
@@ -12,7 +12,7 @@ def worker_task(resp, *args, **kwargs):
     """Process json in background"""
     try:
         resp.data = resp.json()
-    except json.decoder.JSONDecodeError:
+    except JSONDecodeError:
         logging.error("Error while reading Atlas json data.\n")
         resp.data = {}
 
@@ -105,7 +105,7 @@ class Forwarding():
         # Query the API
         for asn in self.asns:
             # Skip the query if we have the corresponding cache
-            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.pickle".format(
+            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.json".format(
                 self.cache_dir, self.start, self.end, asn, self.af)
             if self.cache and os.path.exists(cache_fname):
                 continue
@@ -114,13 +114,13 @@ class Forwarding():
         # Fetch the results
 
         for asn in self.asns:
-            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.pickle".format(
+            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.json".format(
                 self.cache_dir, self.start, self.end, asn, self.af)
 
             if self.cache and os.path.exists(cache_fname):
                 #  get results from cache
                 logging.info("Get results from cache")
-                for res in pickle.load(open(cache_fname, "rb")):
+                for res in json.load(open(cache_fname, "r")):
                     yield res
 
             else:
@@ -152,7 +152,7 @@ class Forwarding():
 
                 if self.cache and len(all_results) > 0 and len(all_results[0]):
                     logging.info("caching results to disk")
-                    pickle.dump(all_results, open(cache_fname, "wb"))
+                    json.dump(all_results, open(cache_fname, "w"))
 
 
 if __name__ == "__main__":
