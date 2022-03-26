@@ -20,7 +20,7 @@ def worker_task(resp, *args, **kwargs):
 class Disconnect():
     def __init__(self, start=None, end=None, streamnames=None, af=4, session=None,
                  cache=True, cache_dir="cache/",
-                 url='https://ihr.iijlab.net/ihr/api/disco_events/',
+                 url='https://ihr.iijlab.net/ihr/api/disco/events/',
                  nb_threads=2):
         """
         :originasn: Origin ASN of interest. It can be a list of ASNs or a single
