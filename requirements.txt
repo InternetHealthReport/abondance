@@ -1,3 +1,0 @@
-arrow
-requests_futures
-ujson
