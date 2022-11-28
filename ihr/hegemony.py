@@ -2,7 +2,7 @@ import os
 import logging
 import ujson as json
 import math
-from json.decoder import JSONDecodeError
+from simplejson.errors import JSONDecodeError
 from collections import defaultdict
 import arrow
 from requests_futures.sessions import FuturesSession
