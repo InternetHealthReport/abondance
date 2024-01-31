@@ -150,4 +150,4 @@ if __name__ == "__main__":
     ).get_results()
 
     for r in res:
-        print(json.dumps(r,indent=4))
+        print(json.dumps(r[0],indent=4))

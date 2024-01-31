@@ -19,9 +19,9 @@ def worker_task(resp, *args, **kwargs):
 
 class Forwarding():
     def __init__(self, start, end, asns=None, af=4, session=None,
-                 cache=True, cache_dir="cache/",
-                 url='https://ihr.iijlab.net/ihr/api/link/forwarding/',
-                 nb_threads=2):
+                cache=True, cache_dir="cache/",
+                url='https://ihr.iijlab.net/ihr/api/link/forwarding/',
+                nb_threads=2):
         """
         :originasn: Origin ASN of interest. It can be a list of ASNs or a single
         int value. Set to 0 for global hegemony.
@@ -152,7 +152,7 @@ class Forwarding():
 
                 if self.cache and len(all_results) > 0 and len(all_results[0]):
                     logging.info("caching results to disk")
-                    json.dump(all_results, open(cache_fname, "w"))
+                    json.dump(all_results, open(cache_fname, "w"),indent=4)#added indentation
 
 
 if __name__ == "__main__":
@@ -164,4 +164,4 @@ if __name__ == "__main__":
     ).get_results()
 
     for r in res:
-        print(r[0])
+        print(json.dumps(r[0],indent=4)) #added indentation
