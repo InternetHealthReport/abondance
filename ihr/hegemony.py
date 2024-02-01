@@ -23,7 +23,20 @@ class Hegemony:
                 url='https://ihr.iijlab.net/ihr/api/hegemony/',
                 nb_threads=2):
         """
-        Initialize Hegemony object with parameters.
+        :originasn: Origin ASN of interest. It can be a list of ASNs or a single
+        int value. Set to 0 for global hegemony.
+        :start: Start date/time.
+        :end: End date/time.
+        :asn: Return dependency only to the given ASNs. By default return all
+        dependencies.
+        :af: Adress family, default is IPv4
+        :session: Requests session to use
+        :page: Page number for paginated results.
+        :cache: Set to False to ignore cache
+        :cache_dir: Directory used for cached results.
+        :url: API root url
+        :nb_threads: Maximum number of parallel downloads
+        Notes: By default results are cached on disk.
         """
         if isinstance(asns, int):
             asns = [asns]
