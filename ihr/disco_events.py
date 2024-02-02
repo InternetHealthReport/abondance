@@ -19,9 +19,9 @@ def worker_task(resp, *args, **kwargs):
 
 class Disconnect():
     def __init__(self, start=None, end=None, streamnames=None, af=4, session=None,
-                 cache=True, cache_dir="cache/",
-                 url='https://ihr.iijlab.net/ihr/api/disco/events/',
-                 nb_threads=2):
+                cache=True, cache_dir="cache/",
+                url='https://ihr.iijlab.net/ihr/api/disco/events/',
+                nb_threads=2):
         """
         :originasn: Origin ASN of interest. It can be a list of ASNs or a single
         int value. Set to 0 for global hegemony.
@@ -149,7 +149,7 @@ class Disconnect():
 
                 if self.cache and len(all_results) > 0 and len(all_results[0]):
                     logging.info("caching results to disk")
-                    json.dump(all_results, open(cache_fname, "w"))
+                    json.dump(all_results, open(cache_fname, "w"),indent=4) #added indentation
 
 
 if __name__ == "__main__":
@@ -159,4 +159,4 @@ if __name__ == "__main__":
     res = Disconnect(streamnames='MX', start="2017-03-02T14:28:07", end="2017-03-03T14:28:07").get_results()
 
     for r in res:
-        print(r)
+        print(json.dumps(r[0],indent=4))#added indentation
