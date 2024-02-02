@@ -65,7 +65,7 @@ class Forwarding():
         self.params = {}
         self.queries = defaultdict(list)
 
-    def query_api(self, asn, page):
+    def query_api(self, asns, page):
         """Single API query. Don't call this method, use get_results instead."""
 
         params = dict(
@@ -76,13 +76,13 @@ class Forwarding():
             format="json"
         )
 
-        if asn is not None:
-            params["asn"] = asn
+        if asns:
+            params["asn"] = ",".join(map(str, asns))
         else:
             logging.error("You should give an ASN.")
             return None
 
-        logging.info("query results for {}, page={}".format(asn, page))
+        logging.info("query results for {}, page={}".format(asns, page))
         self.params = params
         return self.session.get(
             url=self.url, params=params,
@@ -98,61 +98,46 @@ class Forwarding():
         :returns: Dictionary of AS dependencies.
 
         """
-
-        # Main loop
-        queries = {}
-
-        # Query the API
-        for asn in self.asns:
-            # Skip the query if we have the corresponding cache
-            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.json".format(
-                self.cache_dir, self.start, self.end, asn, self.af)
-            if self.cache and os.path.exists(cache_fname):
-                continue
-            queries[asn] = self.query_api(asn, 1)
-
-        # Fetch the results
-
-        for asn in self.asns:
-            cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.json".format(
-                self.cache_dir, self.start, self.end, asn, self.af)
-
-            if self.cache and os.path.exists(cache_fname):
-                #  get results from cache
-                logging.info("Get results from cache")
-                for res in json.load(open(cache_fname, "r")):
+        # Skip the query if we have the corresponding cache
+        cache_fname = "{}/FA_start{}_end{}_asn{}_af{}.json".format(
+            self.cache_dir, self.start, self.end,  "_".join(map(str, self.asns)), self.af)
+        if self.cache and os.path.exists(cache_fname):
+            #  get results from cache
+            logging.info("Get results from cache")
+            with open(cache_fname, "r") as cache_file:
+                for res in json.load(cache_file):
                     yield res
 
+        else:
+            # fetch results
+            all_results = []
+            resp = self.query_api(self.asns, 1).result()
+            logging.info("got results for {}".format(self.asns))
+            if resp.ok and "results" in resp.data and len(resp.data["results"]) > 0:
+                yield resp.data["results"]
+                all_results.append(resp.data["results"])
             else:
-                # fetch results
-                all_results = []
-                resp = queries[asn].result()
-                logging.info("got results for {}".format(asn))
-                if resp.ok and "results" in resp.data and len(resp.data["results"]) > 0:
-                    yield resp.data["results"]
-                    all_results.append(resp.data["results"])
-                else:
-                    logging.warning("No Delay results for  {}".format(self.params))
+                logging.warning("No Delay results for  {}".format(self.params))
 
-                # if results are incomplete get the other pages
-                if resp.data.get("next"):
-                    nb_pages = math.ceil(resp.data["count"] / len(resp.data["results"]))
-                    pages_queries = []
-                    logging.info("{} more pages to query".format(nb_pages))
-                    for p in range(2, int(nb_pages + 1)):
-                        pages_queries.append(self.query_api(asn, p))
+            # if results are incomplete get the other pages
+            if resp.data.get("next"):
+                nb_pages = math.ceil(resp.data["count"] / len(resp.data["results"]))
+                pages_queries = []
+                logging.info("{} more pages to query".format(nb_pages))
+                for p in range(2, int(nb_pages + 1)):
+                    pages_queries.append(self.query_api(self.asns, p))
 
-                    for i, page_resp in enumerate(pages_queries):
-                        resp = page_resp.result()
-                        if resp.ok and "results" in resp.data and len(resp.data["results"]) > 0:
-                            yield resp.data["results"]
-                            all_results.append(resp.data["results"])
-                        else:
-                            logging.warning("No hegemony results for {}, page={}".format(self.params, i + 2))
+                for i, page_resp in enumerate(pages_queries):
+                    resp = page_resp.result()
+                    if resp.ok and "results" in resp.data and len(resp.data["results"]) > 0:
+                        yield resp.data["results"]
+                        all_results.append(resp.data["results"])
+                    else:
+                        logging.warning("No hegemony results for {}, page={}".format(self.params, i + 2))
 
-                if self.cache and len(all_results) > 0 and len(all_results[0]):
-                    logging.info("caching results to disk")
-                    json.dump(all_results, open(cache_fname, "w"),indent=4)#added indentation
+            if self.cache and len(all_results) > 0 and len(all_results[0]):
+                logging.info("caching results to disk")
+                json.dump(all_results, open(cache_fname, "w"),indent=4)#added indentation
 
 
 if __name__ == "__main__":
@@ -160,7 +145,7 @@ if __name__ == "__main__":
     logging.basicConfig(format=FORMAT, filename="Forwarding_Alarms.log", level=logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
     res = Forwarding(
-        asns=[2907, 7922], start="2018-09-15", end="2018-10-16"
+        asns=[2907, 7922], start="2019-09-15", end="2019-9-16"
     ).get_results()
 
     for r in res:
